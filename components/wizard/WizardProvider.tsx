@@ -14,6 +14,7 @@ import type {
   AccessibilityNeed,
   RankedClinic,
   WizardState,
+  TriageResult,
 } from "@/types";
 
 interface WizardContextValue extends WizardState {
@@ -28,6 +29,7 @@ interface WizardContextValue extends WizardState {
   setResults: (clinics: RankedClinic[]) => void;
   setSelectedClinic: (clinic: RankedClinic) => void;
   emergencySkip: (coords: Coordinates) => void;
+  triageSkip: (coords: Coordinates, triage: TriageResult) => void;
 }
 
 const WizardContext = createContext<WizardContextValue | null>(null);
@@ -102,6 +104,20 @@ export default function WizardProvider({ children }: { children: ReactNode }) {
     }));
   }, []);
 
+  const triageSkip = useCallback((coords: Coordinates, triage: TriageResult) => {
+    setState((s) => ({
+      ...s,
+      location: coords,
+      reason: triage.reason,
+      timing: triage.timing,
+      travelMethod: triage.travelMethod,
+      accessibility: triage.accessibility,
+      results: null,
+      isEmergency: false,
+      step: 7,
+    }));
+  }, []);
+
   return (
     <WizardContext.Provider
       value={{
@@ -117,6 +133,7 @@ export default function WizardProvider({ children }: { children: ReactNode }) {
         setResults,
         setSelectedClinic,
         emergencySkip,
+        triageSkip,
       }}
     >
       {children}

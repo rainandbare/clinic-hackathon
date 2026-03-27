@@ -11,6 +11,7 @@ import ResultsStep from "./ResultsStep";
 import ClinicDetailsStep from "./ClinicDetailsStep";
 import SavePrefsStep from "./SavePrefsStep";
 import DirectionsStep from "./DirectionsStep";
+import VoiceTriageStep from "./VoiceTriageStep";
 
 const steps: Record<number, React.ComponentType> = {
   1: WelcomeStep,
@@ -23,6 +24,7 @@ const steps: Record<number, React.ComponentType> = {
   8: ClinicDetailsStep,
   9: SavePrefsStep,
   10: DirectionsStep,
+  11: VoiceTriageStep,
 };
 
 export default function Wizard() {

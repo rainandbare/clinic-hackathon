@@ -1,33 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useCallback } from "react";
 import { useWizard } from "./WizardProvider";
-import { getCurrentPosition, isGeolocationSupported } from "@/lib/geolocation";
-import { setLocationCookie } from "@/lib/cookies";
 
 export default function WelcomeStep() {
-  const { next, emergencySkip } = useWizard();
-  const [emergencyLoading, setEmergencyLoading] = useState(false);
-  const [emergencyError, setEmergencyError] = useState<string | null>(null);
-
-  const handleEmergency = useCallback(async () => {
-    if (!isGeolocationSupported()) {
-      setEmergencyError("Location not available. Enable location access and try again.");
-      return;
-    }
-    setEmergencyLoading(true);
-    setEmergencyError(null);
-    try {
-      const coords = await getCurrentPosition();
-      setLocationCookie(coords.lat, coords.lng);
-      emergencySkip(coords);
-    } catch {
-      setEmergencyError("Couldn't get your location. Please allow location access and try again.");
-    } finally {
-      setEmergencyLoading(false);
-    }
-  }, [emergencySkip]);
+  const { next, goTo } = useWizard();
 
   return (
     <div className="flex flex-col flex-1">
@@ -70,25 +47,14 @@ export default function WelcomeStep() {
           Find the right urgent care
         </button>
         <button
-          onClick={handleEmergency}
-          disabled={emergencyLoading}
-          className="w-full h-14 rounded-2xl bg-cl-text-dark text-white font-semibold text-sm flex items-center justify-center gap-2 disabled:opacity-70"
+          onClick={() => goTo(11)}
+          className="w-full h-14 rounded-2xl bg-cl-text-dark text-white font-semibold text-sm flex items-center justify-center gap-2"
         >
-          {emergencyLoading ? (
-            <>
-              <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-              Finding nearest clinic...
-            </>
-          ) : (
-            "I need urgent care now"
-          )}
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 14a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 0014 0h-2zM11 19.93V22h2v-2.07A8.001 8.001 0 0020 12h-2a6 6 0 01-12 0H4a8.001 8.001 0 007 7.93z" />
+          </svg>
+          Talk to CareLocate
         </button>
-        {emergencyError && (
-          <p className="text-xs text-red-500 text-center">{emergencyError}</p>
-        )}
       </div>
 
       <div className="flex justify-center gap-2 pb-6">

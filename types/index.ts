@@ -42,6 +42,29 @@ export type AccessibilityNeed =
   | "child_friendly"
   | "mobility_accessible";
 
+export interface TriageMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export interface TriageResult {
+  reason: string;
+  timing: TimingPreference;
+  travelMethod: TravelMethod;
+  accessibility: AccessibilityNeed[];
+  summary: string;
+}
+
+export interface TriageRequest {
+  messages: TriageMessage[];
+}
+
+export interface TriageResponse {
+  reply: string;
+  done: boolean;
+  triage?: TriageResult;
+}
+
 export interface RecommendRequest {
   lat: number;
   lng: number;
