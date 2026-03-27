@@ -1,26 +1,46 @@
 @import "tailwindcss";
 
+@plugin "daisyui" {
+  themes: false;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ---- Change this one value to update the page bg ---- */
+  --cl-page-bg: #f3effa;
+
+  --cl-primary: #7657a2;
+  --cl-primary-light: #f1eef6;
+  --cl-primary-lighter: #f3effa;
+  --cl-primary-muted: #b8a4d4;
+  --cl-primary-border: #d4cae8;
+  --cl-text-primary: #473461;
+  --cl-text-dark: #171717;
+  --cl-text-body: #737373;
+  --cl-text-muted: #a3a3a3;
+  --cl-border: #e5e5e5;
+  --cl-card-bg: #ffffff;
+  --cl-warning-bg: #fff7ed;
+  --cl-success: #9b84c7;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-noto-sans);
+  --color-cl-primary: var(--cl-primary);
+  --color-cl-primary-light: var(--cl-primary-light);
+  --color-cl-primary-lighter: var(--cl-primary-lighter);
+  --color-cl-primary-muted: var(--cl-primary-muted);
+  --color-cl-primary-border: var(--cl-primary-border);
+  --color-cl-text-primary: var(--cl-text-primary);
+  --color-cl-text-dark: var(--cl-text-dark);
+  --color-cl-text-body: var(--cl-text-body);
+  --color-cl-text-muted: var(--cl-text-muted);
+  --color-cl-border: var(--cl-border);
+  --color-cl-card-bg: var(--cl-card-bg);
+  --color-cl-warning-bg: var(--cl-warning-bg);
+  --color-cl-page-bg: var(--cl-page-bg);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--cl-page-bg);
+  color: var(--cl-text-dark);
 }
