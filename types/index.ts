@@ -64,4 +64,5 @@ export interface WizardState {
   accessibility: AccessibilityNeed[];
   results: RankedClinic[] | null;
   selectedClinic: RankedClinic | null;
+  isEmergency: boolean;
 }

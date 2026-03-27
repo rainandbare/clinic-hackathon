@@ -1,18 +1,29 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useWizard } from "./WizardProvider";
 import WizardHeader from "@/components/ui/WizardHeader";
 import StepProgress from "@/components/ui/StepProgress";
 import WizardButtons from "@/components/ui/WizardButtons";
 import { getCurrentPosition, isGeolocationSupported } from "@/lib/geolocation";
 import { setLocationCookie, getLocationCookie } from "@/lib/cookies";
-import { useEffect } from "react";
+
+async function geocodeAddress(address: string): Promise<{ lat: number; lng: number }> {
+  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(address)}`;
+  const res = await fetch(url, { headers: { "Accept-Language": "en" } });
+  if (!res.ok) throw new Error("Geocoding request failed.");
+  const data = await res.json();
+  if (!data.length) throw new Error("Address not found. Try being more specific.");
+  return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+}
 
 export default function LocationStep() {
   const { next, back, setLocation, location } = useWizard();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showManual, setShowManual] = useState(false);
+  const [addressInput, setAddressInput] = useState("");
+  const [geocoding, setGeocoding] = useState(false);
 
   useEffect(() => {
     const saved = getLocationCookie();
@@ -39,6 +50,22 @@ export default function LocationStep() {
       setLoading(false);
     }
   }, [setLocation, next]);
+
+  const handleManualSubmit = useCallback(async () => {
+    if (!addressInput.trim()) return;
+    setGeocoding(true);
+    setError(null);
+    try {
+      const coords = await geocodeAddress(addressInput.trim());
+      setLocationCookie(coords.lat, coords.lng);
+      setLocation(coords);
+      next();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not find that address.");
+    } finally {
+      setGeocoding(false);
+    }
+  }, [addressInput, setLocation, next]);
 
   const handleContinueWithSaved = useCallback(() => {
     if (location) next();
@@ -73,28 +100,74 @@ export default function LocationStep() {
         )}
 
         {!location && (
-          <button
-            onClick={handleShare}
-            disabled={loading}
-            className="w-full h-14 rounded-2xl bg-cl-primary text-white font-semibold text-base flex items-center justify-center gap-2"
-          >
-            {loading ? (
-              <>
-                <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-                Locating...
-              </>
+          <>
+            <button
+              onClick={handleShare}
+              disabled={loading}
+              className="w-full h-14 rounded-2xl bg-cl-primary text-white font-semibold text-base flex items-center justify-center gap-2 disabled:opacity-70"
+            >
+              {loading ? (
+                <>
+                  <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  Locating...
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 2a6 6 0 00-6 6c0 4.5 6 10 6 10s6-5.5 6-10a6 6 0 00-6-6zm0 8a2 2 0 110-4 2 2 0 010 4z" />
+                  </svg>
+                  Share my current location
+                </>
+              )}
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="flex-1 h-px bg-cl-border" />
+              <span className="text-xs text-cl-text-body">or</span>
+              <div className="flex-1 h-px bg-cl-border" />
+            </div>
+
+            {showManual ? (
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  value={addressInput}
+                  onChange={(e) => setAddressInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleManualSubmit()}
+                  placeholder="e.g. 123 Main St, Chicago, IL"
+                  className="w-full h-12 rounded-2xl border border-cl-border px-4 text-sm text-cl-text-dark placeholder:text-cl-text-body focus:outline-none focus:border-cl-primary"
+                  autoFocus
+                />
+                <button
+                  onClick={handleManualSubmit}
+                  disabled={geocoding || !addressInput.trim()}
+                  className="w-full h-12 rounded-2xl border border-cl-primary text-cl-primary font-semibold text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {geocoding ? (
+                    <>
+                      <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      Looking up address...
+                    </>
+                  ) : (
+                    "Use this address"
+                  )}
+                </button>
+              </div>
             ) : (
-              <>
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 2a6 6 0 00-6 6c0 4.5 6 10 6 10s6-5.5 6-10a6 6 0 00-6-6zm0 8a2 2 0 110-4 2 2 0 010 4z" />
-                </svg>
-                Share my current location
-              </>
+              <button
+                onClick={() => setShowManual(true)}
+                className="w-full h-12 rounded-2xl border border-cl-border text-cl-text-body font-semibold text-sm"
+              >
+                Type my address instead
+              </button>
             )}
-          </button>
+          </>
         )}
       </div>
 

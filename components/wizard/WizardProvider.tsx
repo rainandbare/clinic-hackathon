@@ -27,6 +27,7 @@ interface WizardContextValue extends WizardState {
   toggleAccessibility: (need: AccessibilityNeed) => void;
   setResults: (clinics: RankedClinic[]) => void;
   setSelectedClinic: (clinic: RankedClinic) => void;
+  emergencySkip: (coords: Coordinates) => void;
 }
 
 const WizardContext = createContext<WizardContextValue | null>(null);
@@ -47,6 +48,7 @@ export default function WizardProvider({ children }: { children: ReactNode }) {
     accessibility: [],
     results: null,
     selectedClinic: null,
+    isEmergency: false,
   });
 
   const next = useCallback(() => setState((s) => ({ ...s, step: s.step + 1 })), []);
@@ -86,6 +88,20 @@ export default function WizardProvider({ children }: { children: ReactNode }) {
     []
   );
 
+  const emergencySkip = useCallback((coords: Coordinates) => {
+    setState((s) => ({
+      ...s,
+      location: coords,
+      reason: "general",
+      timing: "now",
+      travelMethod: "driving",
+      accessibility: [],
+      results: null,
+      isEmergency: true,
+      step: 7,
+    }));
+  }, []);
+
   return (
     <WizardContext.Provider
       value={{
@@ -100,6 +116,7 @@ export default function WizardProvider({ children }: { children: ReactNode }) {
         toggleAccessibility,
         setResults,
         setSelectedClinic,
+        emergencySkip,
       }}
     >
       {children}

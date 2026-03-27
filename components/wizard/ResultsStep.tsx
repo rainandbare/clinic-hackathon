@@ -16,7 +16,7 @@ const REASON_MAP: Record<string, string> = {
 };
 
 export default function ResultsStep() {
-  const { location, reason, travelMethod, timing, accessibility, setResults, results, setSelectedClinic, next, goTo } = useWizard();
+  const { location, reason, travelMethod, timing, accessibility, isEmergency, setResults, results, setSelectedClinic, next, goTo } = useWizard();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -97,10 +97,12 @@ export default function ResultsStep() {
       <StepProgress current={6} total={6} />
 
       <div className="px-4 pt-2 flex-1 space-y-3 overflow-y-auto pb-4">
-        <div className="bg-cl-primary rounded-full px-3 py-1 inline-flex items-center gap-1.5">
-          <span className="text-yellow-300 text-sm">★</span>
-          <span className="text-xs text-white font-semibold">Best for your situation right now</span>
-        </div>
+        {!isEmergency && (
+          <div className="bg-cl-primary rounded-full px-3 py-1 inline-flex items-center gap-1.5">
+            <span className="text-yellow-300 text-sm">★</span>
+            <span className="text-xs text-white font-semibold">Best for your situation right now</span>
+          </div>
+        )}
 
         {/* #1 Featured */}
         <div className="border-2 border-cl-primary rounded-3xl bg-cl-primary-light p-4 space-y-3">

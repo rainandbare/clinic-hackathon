@@ -18,7 +18,17 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "CareLocate",
-  description: "Find the right urgent care — fast",
+  description: "Find the right urgent care — fast. Takes under a minute. We match you to the most suitable clinic, not just the nearest one.",
+  openGraph: {
+    title: "CareLocate",
+    description: "Find the right urgent care — fast.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CareLocate",
+    description: "Find the right urgent care — fast.",
+  },
 };
 
 export default function RootLayout({

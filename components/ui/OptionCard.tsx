@@ -35,7 +35,7 @@ export default function OptionCard({
       <div className="flex-1 min-w-0">
         <p className="font-semibold text-[15px] text-cl-text-dark">{title}</p>
         {description && (
-          <p className="text-xs text-cl-text-muted mt-0.5">{description}</p>
+          <p className="text-xs mt-0.5" style={{ color: "#525252" }}>{description}</p>
         )}
       </div>
       <div
