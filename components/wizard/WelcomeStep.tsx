@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useWizard } from "./WizardProvider";
 
 export default function WelcomeStep() {
@@ -7,15 +8,24 @@ export default function WelcomeStep() {
 
   return (
     <div className="flex flex-col flex-1">
-      <div className="flex items-center justify-center px-5 pt-8 pb-2">
+      <div className="flex items-center justify-center gap-2 px-5 pt-8 pb-2">
+        <svg className="w-6 h-6 shrink-0" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="50" cy="50" r="50" fill="#7657a2" />
+          <rect x="43" y="21" width="14" height="58" rx="7" fill="white" />
+          <rect x="21" y="43" width="58" height="14" rx="7" fill="white" />
+        </svg>
         <span className="text-lg font-bold text-cl-text-primary">CareLocate</span>
       </div>
 
       <div className="flex justify-center px-14 pt-4 pb-6">
-        <div className="w-full aspect-[13/11] rounded-3xl bg-cl-primary-lighter flex items-center justify-center">
-          <svg className="w-24 h-24 text-cl-primary opacity-40" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z" />
-          </svg>
+        <div className="w-full aspect-[13/11] rounded-3xl bg-cl-primary-lighter relative overflow-hidden">
+          <Image
+            src="/cover.png"
+            alt="Nurse pointing to a clinic location pin"
+            fill
+            className="object-contain"
+            priority
+          />
         </div>
       </div>
 

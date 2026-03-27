@@ -4,8 +4,10 @@ export default function WizardHeader() {
   return (
     <header className="flex items-center justify-between px-5 py-4 border-b border-cl-border">
       <div className="flex items-center gap-2">
-        <svg className="w-4 h-4 text-cl-primary" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M10 2a6 6 0 00-6 6c0 4.5 6 10 6 10s6-5.5 6-10a6 6 0 00-6-6zm0 8a2 2 0 110-4 2 2 0 010 4z" />
+        <svg className="w-6 h-6 shrink-0" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="50" cy="50" r="50" fill="#7657a2" />
+          <rect x="43" y="21" width="14" height="58" rx="7" fill="white" />
+          <rect x="21" y="43" width="58" height="14" rx="7" fill="white" />
         </svg>
         <span className="text-lg font-bold text-cl-text-primary">CareLocate</span>
       </div>
